@@ -26,7 +26,11 @@ min_distance.pair.node2node <- function(network, cppRouting_graph, from, to){
     for (id in seq(length(from))){
         from_ <- append(from_, from[[id]])
         to_ <- append(to_, to[[id]])
-        distance_ <- append(distance_, distances[[id]])
+        if (is.na(distances[[id]])) {
+            distance_ <- append(distance_, Inf)
+        } else {
+            distance_ <- append(distance_, distances[[id]])
+        }
     }
     ret <- data.frame(
         from=from_,
