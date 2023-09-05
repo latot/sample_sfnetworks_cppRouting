@@ -1,0 +1,60 @@
+---
+title: "Sample of cppRouting with SfNetworks"
+format: gfm
+---
+
+Sample code to use sfnetworks with cppRouting
+
+First load the functions.
+
+```{R}
+library(wrapr)
+
+#Transform the sfnetworks network, in cppRouting format
+sfnet2cppRouting <- modules::use("sfnet2cppRouting.R")
+
+shortest_path <- modules::use("shortest_path.R")
+min_distance <- modules::use("min_distance.R")
+```
+
+Then load the network and get the cppRouting one too.
+
+```{R}
+network <- "oldenburg_walking_network.geojson" %.>%
+  #Read the file
+  sf::st_read(., quiet = TRUE) %.>%
+  #Only linestrings
+  sf::st_cast(., "LINESTRING") %.>%
+  #Set a column for the weight of the line as the distance
+  dplyr::mutate(., weight = sf::st_length(.)) %.>%
+  #Get the sfnetworks object
+  sfnetworks::as_sfnetwork(., directed = FALSE)
+
+weight <- "weight"
+
+cppRouting_graph <- sfnet2cppRouting$sfnet2cppRouting(network, weight)
+```
+
+Run different costs.
+
+```{R}
+from <- c(1, 2, 3)
+to <- c(5, 6, 7)
+
+print("Shortest Path Matrix")
+shortest_path$networks.shortest_path.node2node.cppRouting.matrix(network, cppRouting_graph, from, to)
+
+print("Shortest Path Pairs")
+shortest_path$networks.shortest_path.node2node.cppRouting.pairs(network, cppRouting_graph, from, to)
+
+print("Min Distance Matrix")
+min_distance$networks.min_distance.node2node.cppRouting.matrix(network, cppRouting_graph, from, to)
+
+print("Min Distance Paris")
+min_distance$networks.min_distance.node2node.cppRouting.pairs(network, cppRouting_graph, from, to)
+```
+
+All returns are a dataframe with "from", "to" columns with the nodes, the last column depends if is distance or shortestpath.
+
+- distance: Use the column distance
+- shortestpath: Use the "path" column, is a geom column

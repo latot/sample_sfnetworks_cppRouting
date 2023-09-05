@@ -1,52 +1,152 @@
-# Code to use sfnetworks with cppRouting
+# Sample of cppRouting with SfNetworks
 
 Sample code to use sfnetworks with cppRouting
 
 First load the functions.
 
-```R
+``` r
 library(wrapr)
 
 #Transform the sfnetworks network, in cppRouting format
-sfnetworks2cppRouting <- modules::use("sfnetworks2cppRouting.R")
-
-#One to all, computed by every "from"
-shortest_path_matrix <- modules::use("shortest_path_matrix.R")
-min_distance_matrix <- modules::use("min_distance_matrix.R")
-
-#Is a pair with the from/to vectors, be sure has the same length
-shortest_path_pair <- modules::use("shortest_path_pair.R")
-min_distance_pair <- modules::use("min_distance_pair.R")
+sfnet2cppRouting <- modules::use("sfnet2cppRouting.R")
 ```
+
+    Package is already on your system.
+    Package is already on your system.
+    Package is already on your system.
+    Package is already on your system.
+    Package is already on your system.
+
+``` r
+shortest_path <- modules::use("shortest_path.R")
+```
+
+    Package is already on your system.
+    Package is already on your system.
+    Package is already on your system.
+    Package is already on your system.
+    Package is already on your system.
+
+``` r
+min_distance <- modules::use("min_distance.R")
+```
+
+    Package is already on your system.
+    Package is already on your system.
+    Package is already on your system.
 
 Then load the network and get the cppRouting one too.
 
-```{r}
-network <- sf::st_read("network.gpkg", quiet = TRUE) %.>%
+``` r
+network <- "oldenburg_walking_network.geojson" %.>%
+  #Read the file
+  sf::st_read(., quiet = TRUE) %.>%
+  #Only linestrings
   sf::st_cast(., "LINESTRING") %.>%
+  #Set a column for the weight of the line as the distance
+  dplyr::mutate(., weight = sf::st_length(.)) %.>%
+  #Get the sfnetworks object
   sfnetworks::as_sfnetwork(., directed = FALSE)
+```
 
-weight <- "TRAVEL_COST"
+    Warning in st_cast.sf(., "LINESTRING"): repeating attributes for all
+    sub-geometries for which they may not be constant
 
-cppRouting_graph <- sfnetworks2cppRouting$sfnetworks2cppRouting(network, weight)
+``` r
+weight <- "weight"
+
+cppRouting_graph <- sfnet2cppRouting$sfnet2cppRouting(network, weight)
 ```
 
 Run different costs.
 
-```{r}
+``` r
 from <- c(1, 2, 3)
 to <- c(5, 6, 7)
 
-spm <- shortest_path_matrix$shortest_path.pair.node2node(network, cppRouting_graph, from, to)
-
-spp <- shortest_path_pair$shortest_path.pair.node2node(network, cppRouting_graph, from, to)
-
-mdp <- min_distance_pair$min_distance.pair.node2node(network, cppRouting_graph, from, to)
-
-mdm <- min_distance_matrix$min_distance.matrix.node2node(network, cppRouting_graph, from, to)
+print("Shortest Path Matrix")
 ```
 
-All returns are a dataframe with "from", "to" columns with the nodes, the last column depends if is distance or shortestpath.
+    [1] "Shortest Path Matrix"
+
+``` r
+shortest_path$networks.shortest_path.node2node.cppRouting.matrix(network, cppRouting_graph, from, to)
+```
+
+    Simple feature collection with 9 features and 2 fields
+    Geometry type: GEOMETRY
+    Dimension:     XY
+    Bounding box:  xmin: 8.208518 ymin: 53.13685 xmax: 8.219401 ymax: 53.14239
+    Geodetic CRS:  WGS 84
+      from to                           path
+    1    1  5 MULTILINESTRING ((8.213525 ...
+    2    1  6 MULTILINESTRING ((8.213525 ...
+    3    1  7 LINESTRING (8.218106 53.140...
+    4    2  5 MULTILINESTRING ((8.213525 ...
+    5    2  6 MULTILINESTRING ((8.213525 ...
+    6    2  7 MULTILINESTRING ((8.218106 ...
+    7    3  5 LINESTRING (8.21851 53.1405...
+    8    3  6 LINESTRING (8.2183 53.14049...
+    9    3  7 LINESTRING (8.218106 53.140...
+
+``` r
+print("Shortest Path Pairs")
+```
+
+    [1] "Shortest Path Pairs"
+
+``` r
+shortest_path$networks.shortest_path.node2node.cppRouting.pairs(network, cppRouting_graph, from, to)
+```
+
+    Simple feature collection with 3 features and 2 fields
+    Geometry type: GEOMETRY
+    Dimension:     XY
+    Bounding box:  xmin: 8.208733 ymin: 53.13902 xmax: 8.219401 ymax: 53.14239
+    Geodetic CRS:  WGS 84
+      from to                           path
+    1    1  5 MULTILINESTRING ((8.213525 ...
+    2    2  6 MULTILINESTRING ((8.213525 ...
+    3    3  7 LINESTRING (8.218106 53.140...
+
+``` r
+print("Min Distance Matrix")
+```
+
+    [1] "Min Distance Matrix"
+
+``` r
+min_distance$networks.min_distance.node2node.cppRouting.matrix(network, cppRouting_graph, from, to)
+```
+
+      from to   distance
+    1    1  1 1089.56645
+    2    1  2 1103.61466
+    3    1  3 1178.87029
+    4    2  1 1041.89042
+    5    2  2 1055.93863
+    6    2  3 1132.26373
+    7    3  1   73.89156
+    8    3  2   59.84335
+    9    3  3  460.52335
+
+``` r
+print("Min Distance Paris")
+```
+
+    [1] "Min Distance Paris"
+
+``` r
+min_distance$networks.min_distance.node2node.cppRouting.pairs(network, cppRouting_graph, from, to)
+```
+
+      from to  distance
+    1    1  5 1089.5664
+    2    2  6 1055.9386
+    3    3  7  460.5234
+
+All returns are a dataframe with “from”, “to” columns with the nodes,
+the last column depends if is distance or shortestpath.
 
 - distance: Use the column distance
-- shortestpath: Use the "path" column, is a geom column
+- shortestpath: Use the “path” column, is a geom column

@@ -8,7 +8,7 @@ pacman::p_install("cppRouting", force = FALSE)
 
 modules::import("wrapr")
 
-sfnetworks2cppRouting <- function(network, weight){
+sfnet2cppRouting <- function(network, weight){
     #if (is.null(network$libs)){
     #    network$libs <- list()
     #}
