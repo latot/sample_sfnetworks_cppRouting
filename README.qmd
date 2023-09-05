@@ -1,11 +1,10 @@
 ---
 title: "Sample of cppRouting with SfNetworks"
 format: gfm
-prefer-html: true
 ---
 
 ```{R, echo = FALSE}
-spsUtil::quiet(pacman::p_install("mapview", force = FALSE))
+#spsUtil::quiet(pacman::p_install("mapview", force = FALSE))
 spsUtil::quiet(pacman::p_install("sf", force = FALSE))
 spsUtil::quiet(pacman::p_install("sfnetworks", force = FALSE))
 spsUtil::quiet(pacman::p_install("dplyr", force = FALSE))
@@ -52,19 +51,13 @@ to <- c(5, 6, 7)
 
 ## Shortest Path Matrix:
 ```{R}
-ret <- shortest_path$networks.shortest_path.node2node.cppRouting.matrix(network, cppRouting_graph, from, to)
-
-print(ret)
-mapview::mapview(ret)
+shortest_path$networks.shortest_path.node2node.cppRouting.matrix(network, cppRouting_graph, from, to)
 ```
 
 
 ## Shortest Path Pairs
 ```{R}
-ret <- shortest_path$networks.shortest_path.node2node.cppRouting.pairs(network, cppRouting_graph, from, to)
-
-print(ret)
-mapview::mapview(ret)
+shortest_path$networks.shortest_path.node2node.cppRouting.pairs(network, cppRouting_graph, from, to)
 ```
 
 ## Min Distance Matrix
