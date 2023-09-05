@@ -70,6 +70,8 @@ min_distance$networks.min_distance.node2node.cppRouting.matrix(network, cppRouti
 min_distance$networks.min_distance.node2node.cppRouting.pairs(network, cppRouting_graph, from, to)
 ```
 
+## Notes
+
 All returns are a dataframe with "from", "to" columns with the nodes, the last column depends if is distance or shortestpath.
 
 - distance: Use the column distance

@@ -110,6 +110,8 @@ min_distance$networks.min_distance.node2node.cppRouting.pairs(network, cppRoutin
     2    2  6 1055.9386
     3    3  7  460.5234
 
+## Notes
+
 All returns are a dataframe with “from”, “to” columns with the nodes,
 the last column depends if is distance or shortestpath.
 
