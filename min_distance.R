@@ -1,8 +1,8 @@
 #Author: Felipe Matas, with University Adolfo Ibáñez
 
-pacman::p_install("wrapr", force = FALSE)
-pacman::p_install("cppRouting", force = FALSE)
-pacman::p_install("coro", force = FALSE)
+spsUtil::quiet(pacman::p_install("wrapr", force = FALSE))
+spsUtil::quiet(pacman::p_install("cppRouting", force = FALSE))
+spsUtil::quiet(pacman::p_install("coro", force = FALSE))
 
 
 modules::import("wrapr")

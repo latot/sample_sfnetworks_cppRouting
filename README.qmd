@@ -1,7 +1,15 @@
 ---
 title: "Sample of cppRouting with SfNetworks"
 format: gfm
+prefer-html: true
 ---
+
+```{R, echo = FALSE}
+spsUtil::quiet(pacman::p_install("mapview", force = FALSE))
+spsUtil::quiet(pacman::p_install("sf", force = FALSE))
+spsUtil::quiet(pacman::p_install("sfnetworks", force = FALSE))
+spsUtil::quiet(pacman::p_install("dplyr", force = FALSE))
+```
 
 Sample code to use sfnetworks with cppRouting
 
