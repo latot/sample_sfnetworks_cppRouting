@@ -52,7 +52,7 @@ networks.shortest_path.node2node.cppRouting <- function(network, cppRouting_grap
           path_ <- net %.>%
                   #Extract the node
                   sfnetworks::activate(., "nodes") %.>%
-                  dplyr::filter(., dplyr::row_number() == 4) %.>%
+                  dplyr::filter(., dplyr::row_number() == element$from) %.>%
                   sf::st_as_sf(.) %.>%
                   sf::st_geometry(.)[[1]] %.>%
                   #Create a line with the same node two times
